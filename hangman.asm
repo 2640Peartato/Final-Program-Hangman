@@ -8,6 +8,13 @@
 #   - guess character, if correct display char locations, else add 1 to counter
 #   - give up, haha loser, game end
 
+#macro getUserInt
+.macro getUserInt
+li $v0, 5
+syscall
+move $t0, $v0 #users int stored in $t0
+.end_macro
+
 #macro defString
 .macro defString(%str)
 li $v0, 4
@@ -54,7 +61,8 @@ wordChoice:
 	#print rules and word request, take user string input
 	defString(rules)
 	defString(wordRequest)
-	getInput
+	getUserInt
+	move $t1, $t0
 	
 	#references wordbank
 	beq $t1, 1, zebra
@@ -88,7 +96,8 @@ valve:
 menu:	
 	defString(userMenu)
 	defString(userChoice)
-	getInput
+	getUserInt
+	move $t1, $t0
 	
 	beq $t1, 1, playerGuess #moves player to guess
 	beq $t1, 2, playerGuess #moves player to guess
