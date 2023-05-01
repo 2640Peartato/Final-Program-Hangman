@@ -2,7 +2,7 @@
 #Date: 05/14/23
 #Objectives: Create a Hangman game
 # - print rules to user
-# - get user string input for word used in game, possibly need to get string length
+# - get user input for word used in game
 # - 3 options for the user
 #   - guess word, if correct instant win, else add 1 to counter
 #   - guess character, if correct display char locations, else add 1 to counter
@@ -29,8 +29,8 @@ move $t1, $a0
 
 .data
 userInput: .space 51 #string length max is 50 chars
-rules: .asciiz "\nProvide a word, you will have 5 attempts to get the word before you lose."
-wordRequest: .asciiz "\nPlease provide a word (50 character limit): "
+rules: .asciiz "\nChoose a word, you will have 5 attempts to get the word before you lose."
+wordRequest: .asciiz "\nSelect an int (1-5) and a word will be provided for the game: "
 userMenu: .asciiz "\n~~~~~~~~~~~~~~Main Menu~~~~~~~~~~~~~~\n(1) guess word\n(2) guess a letter\n(3) give up\n(4) exit the game"
 userChoice: .asciiz "\nPlease enter a number to choose an option: "
 userGuess: .asciiz "\nEnter your guess: "
@@ -39,6 +39,11 @@ wrongCharacterGuess:"\nSorry wrong letter"
 correctStringGuess:"\nCongratulations you guessed the correct word!"
 wrongStringGuess:"\nIncorrect guess of the word"
 exitMessage: .asciiz "\nThanks for playing!"
+wordBank1: .asciiz "zebra"
+wordBank2: .asciiz "grade"
+wordBank3: .asciiz "ocean"
+wordBank4: .asciiz "laser"
+wordBank5: .asciiz "valve"
 
 # current $t's being used as reference
 # - $t7, used to store first user input string
@@ -50,8 +55,36 @@ wordChoice:
 	defString(rules)
 	defString(wordRequest)
 	getInput
-	move $t7, $t1 #stores user inputed string into $t7
 	
+	#references wordbank
+	beq $t1, 1, zebra
+	beq $t1, 2, grade
+	beq $t1, 3, ocean
+	beq $t1, 4, laser
+	beq $t1, 5, valve
+
+#wordbank	
+zebra: 
+	la $t7, wordBank1
+	j menu
+	
+grade: 
+	la $t7, wordBank2
+	j menu
+	
+ocean: 
+	la $t7, wordBank3
+	j menu
+	
+laser: 
+	la $t7, wordBank4
+	j menu
+	
+valve: 
+	la $t7, wordBank5
+	j menu
+
+#player menu
 menu:	
 	defString(userMenu)
 	defString(userChoice)
