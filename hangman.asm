@@ -92,24 +92,43 @@ valve:
 	la $t7, wordBank5
 	j menu
 
-#player menu
 menu:	
 	defString(userMenu)
 	defString(userChoice)
-	getUserInt
-	move $t1, $t0
+	getInput
+	move $t5, $t1
 	
-	beq $t1, 1, playerGuess #moves player to guess
-	beq $t1, 2, playerGuess #moves player to guess
-	beq $t1, 3, wordChoice  #allows for new word to be chosen
-	beq $t1, 4, exit	#exits the entire game 
+	beq $t5, 1, playerGuess #moves player to guess
+	beq $t5, 2, playerGuess #moves player to guess
+	beq $t5, 3, wordChoice  #allows for new word to be chosen
+	beq $t5, 4, exit	#exits the entire game 
 	
 playerGuess:
 	defString(userGuess)
 	getInput
 	move $t6, $t1	#stores user guess into $t6
+	beq $t5, 1, charCompare
+	beq $t5, 2, stringCompareLoop
 	
-compareLoop:
+charCompare:
+	lb $t0, 0($t7) #loads character of actual string on (first loop = first character)
+	lb $t2, 0($t6) #loads character of guessed string on (first loop = first character)
+	#checks if the characters are equal, if 0 then equal
+	sub $t3, $t2, $t0
+	#breaks into equal solution if char matcges 
+	beq $t3, 0, sameChar
+	j wrongChar
+	
+sameChar:
+	defString(correctCharacterGuess)
+	j menu
+wrongChar:
+	defString(wrongCharacterGuess)
+	#sub from a created counter for how many mistakes
+	#break statement for if enough mistakes goes to you lose screen
+	j menu
+	
+stringCompareLoop:
 	lb $t0, 0($t7) #loads character of actual string on (first loop = first character)
 	lb $t2, 0($t6) #loads character of guessed string on (first loop = first character)
 	#checks if the characters are equal, if 0 then equal
@@ -118,18 +137,28 @@ compareLoop:
 	#moves into iterating to next character if characters checked are euqal
 	beq $t3, 0, equalLoop
 	#if not equal then moves into the ending of the loop
-	j endLoop
+	j stringEnd
 
 equalLoop:
-	
+	beq $t2, 5, stringEnd
 	#iterates to next character in strings
 	addi $t7, $t7, 1
 	addi $t6, $t6, 1
-	j compareLoop
-	
-endLoop:
-	
-	
+	j stringCompareLoop
+		
+stringEnd:
+	#if the string is the same
+	beq $t6, $zero, sameString
+	#if not then the string did not match have player guess agai
+	defString(wrongStringGuess)
+	#wrong string guess game over
+	j menu
+
+sameString: 
+	#correct string guess move to menu for play again or exit
+	defString(correctStringGuess)
+	j menu
+
 exit:
 	defString(exitMessage)
 	li $v0, 10
