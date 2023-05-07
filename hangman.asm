@@ -107,8 +107,8 @@ playerGuess:
 	defString(userGuess)
 	getInput
 	move $t6, $t1	#stores user guess into $t6
-	beq $t5, 1, charCompare
-	beq $t5, 2, stringCompareLoop
+	beq $t5, 2, charCompare
+	beq $t5, 1, stringCompareLoop
 	
 charCompare:
 	lb $t0, 0($t7) #loads character of actual string on (first loop = first character)
