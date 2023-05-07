@@ -50,7 +50,7 @@ wordBank1: .asciiz "zebra"
 wordBank2: .asciiz "grade"
 wordBank3: .asciiz "ocean"
 wordBank4: .asciiz "laser"
-wordBank5: .asciiz "valve"
+wordBank5: .asciiz "jerky"
 
 # current $t's being used as reference
 # - $t7, used to store first user input string
@@ -69,7 +69,7 @@ wordChoice:
 	beq $t1, 2, grade
 	beq $t1, 3, ocean
 	beq $t1, 4, laser
-	beq $t1, 5, valve
+	beq $t1, 5, jerky
 
 #wordbank	
 zebra: 
@@ -88,7 +88,7 @@ laser:
 	la $t7, wordBank4
 	j menu
 	
-valve: 
+jerky: 
 	la $t7, wordBank5
 	j menu
 
