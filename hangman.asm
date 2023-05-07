@@ -28,7 +28,7 @@ syscall
 #two arguments: $a0=address of the buffer and $al=length of the string
 li $v0, 8
 la $a0, userInput
-la $a1, 63
+la $a1, 51
 syscall
 #move content in buffer to another register
 move $t1, $a0
@@ -36,7 +36,7 @@ move $t1, $a0
 
 .data
 userInput: .space 51 #string length max is 50 chars
-rules: .asciiz "\nChoose a word, you will have 5 attempts to get the word before you lose."
+rules: .asciiz "\nChoose a word, you have 1 chance to guess a word, and 5 possible strikes when choosing a letter.\nIf you guess the wrong word, or choose 5 letters not in the word you lose."
 wordRequest: .asciiz "\nSelect an int (1-5) and a word will be provided for the game: "
 userMenu: .asciiz "\n~~~~~~~~~~~~~~Main Menu~~~~~~~~~~~~~~\n(1) guess word\n(2) guess a letter\n(3) give up\n(4) exit the game"
 userChoice: .asciiz "\nPlease enter a number to choose an option: "
@@ -51,6 +51,7 @@ wordBank2: .asciiz "grade"
 wordBank3: .asciiz "ocean"
 wordBank4: .asciiz "laser"
 wordBank5: .asciiz "jerky"
+test: .asciiz "\ntest"
 
 # current $t's being used as reference
 # - $t7, used to store first user input string
@@ -93,6 +94,9 @@ jerky:
 	j menu
 
 menu:	
+	#stringTestCount
+	li $t8, 1
+	
 	defString(userMenu)
 	defString(userChoice)
 	getUserInt
@@ -106,6 +110,8 @@ menu:
 playerGuess:
 	defString(userGuess)
 	getInput
+	la $s1, userInput
+	move $t3, $s1
 	move $t6, $t1	#stores user guess into $t6
 	beq $t5, 2, charCompare
 	beq $t5, 1, stringCompareLoop
@@ -129,35 +135,30 @@ wrongChar:
 	j menu
 	
 stringCompareLoop:
-	lb $t0, 0($t7) #loads character of actual string on (first loop = first character)
-	lb $t2, 0($t6) #loads character of guessed string on (first loop = first character)
-	#checks if the characters are equal, if 0 then equal
-	sub $t3, $t2, $t0
 	
-	#moves into iterating to next character if characters checked are euqal
-	beq $t3, 0, equalLoop
-	#if not equal then moves into the ending of the loop
-	j stringEnd
-
-equalLoop:
-	beq $t2, 5, stringEnd
-	#iterates to next character in strings
+	lb $t3, ($t7) #loads character of actual string on (first loop = first character)
+	lb $t2, ($t6) #loads character of guessed string on (first loop = first character)
+	#checks if the characters are equal, if not equal sends to difString
+	bne $t2, $t3, difString
+	
+	addi $t8, $t8, 1
+	beq $t8, 6, sameString
+	
+	#points to next char
 	addi $t7, $t7, 1
 	addi $t6, $t6, 1
 	j stringCompareLoop
 		
-stringEnd:
-	#if the string is the same
-	beq $t6, $zero, sameString
+difString:
 	#if not then the string did not match have player guess agai
 	defString(wrongStringGuess)
-	#wrong string guess game over
-	j menu
+	
+	j exit
 
 sameString: 
 	#correct string guess move to menu for play again or exit
 	defString(correctStringGuess)
-	j menu
+	j exit
 
 exit:
 	defString(exitMessage)
