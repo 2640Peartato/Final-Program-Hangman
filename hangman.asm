@@ -95,8 +95,8 @@ jerky:
 menu:	
 	defString(userMenu)
 	defString(userChoice)
-	getInput
-	move $t5, $t1
+	getUserInt
+	move $t5, $t0
 	
 	beq $t5, 1, playerGuess #moves player to guess
 	beq $t5, 2, playerGuess #moves player to guess
