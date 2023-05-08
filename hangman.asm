@@ -74,28 +74,30 @@ wordChoice:
 
 #wordbank	
 zebra: 
-	la $t7, wordBank1
+	la $s2, wordBank1
 	j menu
 	
 grade: 
-	la $t7, wordBank2
+	la $s2, wordBank2
 	j menu
 	
 ocean: 
-	la $t7, wordBank3
+	la $s2, wordBank3
 	j menu
 	
 laser: 
-	la $t7, wordBank4
+	la $s2, wordBank4
 	j menu
 	
 jerky: 
-	la $t7, wordBank5
+	la $s2, wordBank5
 	j menu
 
 menu:	
 	#stringTestCount
 	li $t8, 1
+	#set wordbank word
+	move $t7, $s2
 	
 	defString(userMenu)
 	defString(userChoice)
