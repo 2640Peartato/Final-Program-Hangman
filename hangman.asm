@@ -119,11 +119,14 @@ playerGuess:
 charCompare:
 	lb $t0, 0($t7) #loads character of actual string on (first loop = first character)
 	lb $t2, 0($t6) #loads character of guessed string on (first loop = first character)
-	#checks if the characters are equal, if 0 then equal
-	sub $t3, $t2, $t0
 	#breaks into equal solution if char matcges 
-	beq $t3, 0, sameChar
-	j wrongChar
+	beq $t0, $t2, sameChar	
+	beq $t8, 6, wrongChar
+	addi $t8, $t8, 1
+	#points to next char
+	addi $t7, $t7, 1
+	#if whole string is does not match then character guess wrong
+	j charCompare
 	
 sameChar:
 	defString(correctCharacterGuess)
