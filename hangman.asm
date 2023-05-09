@@ -42,9 +42,9 @@ userMenu: .asciiz "\n~~~~~~~~~~~~~~Main Menu~~~~~~~~~~~~~~\n(1) guess word\n(2) 
 userChoice: .asciiz "\nPlease enter a number to choose an option: "
 userGuess: .asciiz "\nEnter your guess: "
 correctCharacterGuess:"\nCorrect letter!"
-wrongCharacterGuess:"\nSorry wrong letter"
+wrongCharacterGuess:"\nSorry wrong letter\n"
 correctStringGuess:"\nCongratulations you guessed the correct word!"
-wrongStringGuess:"\nIncorrect guess of the word"
+wrongStringGuess:"\nIncorrect guess of the word\n"
 exitMessage: .asciiz "\nThanks for playing!"
 wordBank1: .asciiz "zebra"
 wordBank2: .asciiz "grade"
@@ -60,7 +60,7 @@ life3: .asciiz "	|-----|\n	|     |\n	O     |\n	|     |\n	|     |\n	      |\n	---
 life4: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|     |\n	|     |\n	      |\n	---------\n"
 life5: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n	      |\n	---------\n"
 life6: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n       /      |\n	---------\n"
-life7: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n       / \\    |\n	---------\n"
+life7: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n       / \\    |\n	---------\n	GAME OVER\n"
 
 # current $t's being used as reference
 # - $t7, used to store first user input string
@@ -161,7 +161,53 @@ wrongChar:
 	defString(wrongCharacterGuess)
 	#sub from a created counter for how many mistakes
 	addi $t9, $t9, 1
+	
+	beq $t9, 1, lives
+	beq $t9, 2, live2
+	beq $t9, 3, live3
+	beq $t9, 4, live4
+	beq $t9, 5, live5
+	beq $t9, 6, live6
+	beq $t9, 7, difString
+	
 	#break statement for if enough mistakes goes to you lose screen
+	#j menu
+	
+lives:
+	li $v0, 4
+	la $a0, life1
+	syscall
+	
+	j menu
+live2:
+	li $v0, 4
+	la $a0, life2
+	syscall
+	
+	j menu
+live3:
+	li $v0, 4
+	la $a0, life3
+	syscall
+	
+	j menu
+live4: 
+	li $v0, 4
+	la $a0, life4
+	syscall
+	
+	j menu
+live5:
+	li $v0, 4
+	la $a0, life5
+	syscall
+	
+	j menu
+live6:
+	li $v0, 4
+	la $a0, life6
+	syscall
+	
 	j menu
 	
 stringCompareLoop:
@@ -182,6 +228,9 @@ stringCompareLoop:
 difString:
 	#if not then the string did not match have player guess again
 	defString(wrongStringGuess)
+	li $v0, 4
+	la $a0, life7
+	syscall
 	
 	j exit
 
