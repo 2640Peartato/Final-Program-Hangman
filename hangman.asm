@@ -53,10 +53,21 @@ wordBank4: .asciiz "laser"
 wordBank5: .asciiz "jerky"
 test: .asciiz "\ntest"
 
+#ascii art:
+life1: .asciiz "	|-----|\n	|     |\n	      |\n	      |\n	      |\n	      |\n	---------\n"
+life2: .asciiz "	|-----|\n	|     |\n	O     |\n	      |\n	      |\n	      |\n	---------\n"
+life3: .asciiz "	|-----|\n	|     |\n	O     |\n	|     |\n	|     |\n	      |\n	---------\n"
+life4: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|     |\n	|     |\n	      |\n	---------\n"
+life5: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n	      |\n	---------\n"
+life6: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n       /      |\n	---------\n"
+life7: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n       / \\    |\n	---------\n"
+
 # current $t's being used as reference
 # - $t7, used to store first user input string
 .text
 main:
+	li $t4, 0	#correct counter
+	li $t9, 0	#incorrect counter
 
 wordChoice:
 	#print rules and word request, take user string input
@@ -94,6 +105,7 @@ jerky:
 	j menu
 
 menu:	
+
 	#stringTestCount
 	li $t8, 1
 	#set wordbank word
@@ -107,24 +119,34 @@ menu:
 	beq $t5, 1, playerGuess #moves player to guess
 	beq $t5, 2, playerGuess #moves player to guess
 	beq $t5, 3, wordChoice  #allows for new word to be chosen
-	beq $t5, 4, exit	#exits the entire game 
+	beq $t5, 4, exit	#exits the entire game
 	
 playerGuess:
 	defString(userGuess)
 	getInput
+	
+	beq $t9, 7, difString
+	beq $t4, 5, sameString
+	
 	la $s1, userInput
 	move $t3, $s1
 	move $t6, $t1	#stores user guess into $t6
 	beq $t5, 2, charCompare
 	beq $t5, 1, stringCompareLoop
 	
+	
 charCompare:
+	
 	lb $t0, 0($t7) #loads character of actual string on (first loop = first character)
 	lb $t2, 0($t6) #loads character of guessed string on (first loop = first character)
 	#breaks into equal solution if char matcges 
 	beq $t0, $t2, sameChar	
+	
 	beq $t8, 6, wrongChar
 	addi $t8, $t8, 1
+	
+	
+	
 	#points to next char
 	addi $t7, $t7, 1
 	#if whole string is does not match then character guess wrong
@@ -132,10 +154,13 @@ charCompare:
 	
 sameChar:
 	defString(correctCharacterGuess)
+	
+	
 	j menu
 wrongChar:
 	defString(wrongCharacterGuess)
 	#sub from a created counter for how many mistakes
+	addi $t9, $t9, 1
 	#break statement for if enough mistakes goes to you lose screen
 	j menu
 	
@@ -155,7 +180,7 @@ stringCompareLoop:
 	j stringCompareLoop
 		
 difString:
-	#if not then the string did not match have player guess agai
+	#if not then the string did not match have player guess again
 	defString(wrongStringGuess)
 	
 	j exit
@@ -163,7 +188,9 @@ difString:
 sameString: 
 	#correct string guess move to menu for play again or exit
 	defString(correctStringGuess)
+	
 	j exit
+
 
 exit:
 	defString(exitMessage)
