@@ -66,8 +66,8 @@ life7: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n      
 # - $t7, used to store first user input string
 .text
 main:
-	li $t4, 0	#correct counter
-	li $t9, 0	#incorrect counter
+	li $t4, 1	#correct counter
+	li $t9, 1	#incorrect counter
 
 wordChoice:
 	#print rules and word request, take user string input
@@ -154,7 +154,7 @@ charCompare:
 	
 sameChar:
 	defString(correctCharacterGuess)
-	
+	addi $t4, $t4, 1
 	
 	j menu
 wrongChar:
