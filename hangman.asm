@@ -8,7 +8,7 @@
 #	- if incorrect, instant loss
 #   - guess character, if correct display char locations, else add 1 to counter
 #	- if incorrect, add 1 to incorrect counter, display ascii art of hangman
-#   - give up, haha loser, game end
+#   - give up, game end, jump back to wordChoice
 #   - exit program
 
 #macro getUserInt
