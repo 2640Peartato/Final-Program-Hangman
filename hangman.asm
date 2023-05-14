@@ -48,6 +48,11 @@ misses: .asciiz "Misses: "
 correctStringGuess:"\nCongratulations you guessed the correct word!"
 wrongStringGuess:"\nIncorrect guess of the word\n"
 exitMessage: .asciiz "\nThanks for playing!"
+letterPlace1: .asciiz "\nIn this 5 letter word, the letter you entered is the first letter."
+letterPlace2: .asciiz "\nIn this 5 letter word, the letter you entered is the second letter."
+letterPlace3: .asciiz "\nIn this 5 letter word, the letter you entered is the third letter."
+letterPlace4: .asciiz "\nIn this 5 letter word, the letter you entered is the fourth letter."
+letterPlace5: .asciiz "\nIn this 5 letter word, the letter you entered is the fifth letter."
 wordBank1: .asciiz "zebra"
 wordBank2: .asciiz "grade"
 wordBank3: .asciiz "ocean"
@@ -165,9 +170,10 @@ charCompare:
 	
 	lb $t0, 0($t7) #loads character of actual string on (first loop = first character)
 	lb $t2, 0($t6) #loads character of guessed string on (first loop = first character)
+  
 	#breaks into equal solution if char matches 
-	beq $t0, $t2, sameChar	
-	
+	beq $t0, $t2, letterPlacement	
+  
 	beq $t8, 6, wrongChar
 	addi $t8, $t8, 1
 	
@@ -180,6 +186,34 @@ charCompare:
 	addi $s3, $s3, 1
 	
 	j charCompare
+	
+letterPlacement:
+	beq $t8, 1, place1
+	beq $t8, 2, place2
+	beq $t8, 3, place3
+	beq $t8, 4, place4
+	beq $t8, 5, place5
+	beq $t8, 6, place5
+	
+place1:
+	defString(letterPlace1)
+	j sameChar
+	
+place2:
+	defString(letterPlace2)
+	j sameChar
+	
+place3:
+	defString(letterPlace3)
+	j sameChar
+	
+place4:
+	defString(letterPlace4)
+	j sameChar
+	
+place5:
+	defString(letterPlace5)
+	j sameChar
 	
 sameChar:
 	defString(correctCharacterGuess)
@@ -265,14 +299,13 @@ difString:
 	la $a0, life7
 	syscall
 	
-	j exit
+	j wordChoice
 
 sameString: 
 	#correct string guess move to menu for play again or exit
 	defString(correctStringGuess)
-	
-	j exit
 
+	j wordChoice
 
 exit:
 	defString(exitMessage)
