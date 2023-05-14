@@ -224,7 +224,7 @@ sameChar:
 	syscall
 	
 	li $v0, 4
-	move $a0, t6
+	move $a0, $t6
 	syscall 
 	
 	j menu
