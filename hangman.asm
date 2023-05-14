@@ -40,13 +40,11 @@ rules: .asciiz "\nChoose a word, you have 1 chance to guess a word, and 5 possib
 wordRequest: .asciiz "\nSelect an int (1-5) and a word will be provided for the game: "
 userMenu: .asciiz "\n~~~~~~~~~~~~~~Main Menu~~~~~~~~~~~~~~\n(1) guess word\n(2) guess a letter\n(3) give up\n(4) exit the game"
 userChoice: .asciiz "\nPlease enter a number to choose an option: "
-length: .asciiz "\nThe word is 5 letters!"
 userGuess: .asciiz "\nEnter your guess: "
-correctCharacterGuess:"\nCorrect letter!\n"
-wrongCharacterGuess:"\nSorry wrong letter\n"
-misses: .asciiz "Misses: "
+correctCharacterGuess:"\nCorrect letter!"
+wrongCharacterGuess:"\nSorry wrong letter"
 correctStringGuess:"\nCongratulations you guessed the correct word!"
-wrongStringGuess:"\nIncorrect guess of the word\n"
+wrongStringGuess:"\nIncorrect guess of the word"
 exitMessage: .asciiz "\nThanks for playing!"
 letterPlace1: .asciiz "\nIn this 5 letter word, the letter you entered is the first letter."
 letterPlace2: .asciiz "\nIn this 5 letter word, the letter you entered is the second letter."
@@ -58,35 +56,30 @@ wordBank2: .asciiz "grade"
 wordBank3: .asciiz "ocean"
 wordBank4: .asciiz "laser"
 wordBank5: .asciiz "jerky"
-invalid: .asciiz "\nInvalid input, try again!"
 test: .asciiz "\ntest"
-masks: .space 10
+invalid: .asciiz "\nInvalid input, try again!"
 
 #ascii art:
-#life1: .asciiz "	|-----|\n	|     |\n	O     |\n	      |\n	      |\n	      |\n	---------\n"
-life2: .asciiz "	|-----|\n	|     |\n	O     |\n	      |\n	      |\n	      |\n	---------\n"
-life3: .asciiz "	|-----|\n	|     |\n	O     |\n	|     |\n	|     |\n	      |\n	---------\n"
-life4: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|     |\n	|     |\n	      |\n	---------\n"
-life5: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n	      |\n	---------\n"
-life6: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n       /      |\n	---------\n"
-life7: .asciiz "	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n       / \\    |\n	---------\n	GAME OVER\n"
+life2: .asciiz "\n	|-----|\n	|     |\n	O     |\n	      |\n	      |\n	      |\n	---------\n"
+life3: .asciiz "\n	|-----|\n	|     |\n	O     |\n	|     |\n	|     |\n	      |\n	---------\n"
+life4: .asciiz "\n	|-----|\n	|     |\n	O     |\n       \\|     |\n	|     |\n	      |\n	---------\n"
+life5: .asciiz "\n	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n	      |\n	---------\n"
+life6: .asciiz "\n	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n       /      |\n	---------\n"
+life7: .asciiz "\n	|-----|\n	|     |\n	O     |\n       \\|/    |\n	|     |\n       / \\    |\n	---------\n	GAME OVER\n"
+
 
 # current $t's being used as reference
 # - $t7, used to store first user input string
 .text
 main:
-	
 	li $t4, 0	#correct counter
 	li $t9, 0	#incorrect counter
-	
 wordChoice:
 	#print rules and word request, take user string input
 	defString(rules)
 	defString(wordRequest)
 	getUserInt
 	move $t1, $t0
-	
-	defString(length)
 	
 	#references wordbank
 	ble $t0, 0, INVALID
@@ -96,7 +89,7 @@ wordChoice:
 	beq $t1, 4, laser
 	beq $t1, 5, jerky
 	bge $t1, 6, INVALID
-
+	
 #wordbank	
 zebra: 
 	la $s2, wordBank1
@@ -117,14 +110,12 @@ laser:
 jerky: 
 	la $s2, wordBank5
 	j menu
-	
+
 INVALID:
 	defString(invalid)
 	j wordChoice
 
-
 menu:	
-
 	#stringTestCount
 	li $t8, 1
 	#set wordbank word
@@ -144,16 +135,11 @@ menu:
 	
 inval:
 	defString(invalid)
-	
 	j menu
 	
 playerGuess:
-
 	defString(userGuess)
 	getInput
-	
-	#initialize offset counter
-	li $s3, 0 
 	
 	beq $t9, 7, difString
 	beq $t4, 4, sameString
@@ -164,27 +150,16 @@ playerGuess:
 	beq $t5, 2, charCompare
 	beq $t5, 1, stringCompareLoop
 	
-	
 charCompare:
-	
-	
 	lb $t0, 0($t7) #loads character of actual string on (first loop = first character)
 	lb $t2, 0($t6) #loads character of guessed string on (first loop = first character)
-  
-	#breaks into equal solution if char matches 
+	#breaks into equal solution if char matcges 
 	beq $t0, $t2, letterPlacement	
-  
 	beq $t8, 6, wrongChar
 	addi $t8, $t8, 1
-	
-	
 	#points to next char
 	addi $t7, $t7, 1
 	#if whole string is does not match then character guess wrong
-	
-	#increment offset counter
-	addi $s3, $s3, 1
-	
 	j charCompare
 	
 letterPlacement:
@@ -218,22 +193,12 @@ place5:
 sameChar:
 	defString(correctCharacterGuess)
 	addi $t4, $t4, 1
-	
-	li $v0, 1
-	move $a0, $t4
-	syscall
-	
-	li $v0, 4
-	move $a0, $t6
-	syscall 
-	
 	j menu
 wrongChar:
 	defString(wrongCharacterGuess)
 	#sub from a created counter for how many mistakes
 	addi $t9, $t9, 1
 	
-	#beq $t9, 1, lives
 	beq $t9, 1, live2
 	beq $t9, 2, live3
 	beq $t9, 3, live4
@@ -244,35 +209,24 @@ wrongChar:
 	#break statement for if enough mistakes goes to you lose screen
 	#j menu
 	
-
 live2:
-	li $v0, 4
-	la $a0, life2
-	syscall
+	defString(life2)
 	
 	j menu
 live3:
-	li $v0, 4
-	la $a0, life3
-	syscall
+	defString(life3)
 	
 	j menu
 live4: 
-	li $v0, 4
-	la $a0, life4
-	syscall
+	defString(life4)
 	
 	j menu
 live5:
-	li $v0, 4
-	la $a0, life5
-	syscall
+	defString(life5)
 	
 	j menu
 live6:
-	li $v0, 4
-	la $a0, life6
-	syscall
+	defString(life6)
 	
 	j menu	
 	
@@ -292,19 +246,14 @@ stringCompareLoop:
 	j stringCompareLoop
 		
 difString:
-	#if not then the string did not match have player guess again
+	#if not then the string did not match have player guess agai
 	defString(wrongStringGuess)
-	
-	li $v0, 4
-	la $a0, life7
-	syscall
-	
+	defString(life7)
 	j wordChoice
 
 sameString: 
 	#correct string guess move to menu for play again or exit
 	defString(correctStringGuess)
-
 	j wordChoice
 
 exit:
