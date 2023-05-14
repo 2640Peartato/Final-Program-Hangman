@@ -36,7 +36,7 @@ move $t1, $a0
 
 .data
 userInput: .space 51 #string length max is 50 chars
-rules: .asciiz "\nChoose a word, you have 1 chance to guess a word, and 5 possible strikes when choosing a letter.\nIf you guess the wrong word, or choose 5 letters not in the word you lose."
+rules: .asciiz "\nChoose a word, you have 1 chance to guess a word, and 6 possible strikes when choosing a letter.\nIf you guess the wrong word, or choose 5 letters not in the word you lose."
 wordRequest: .asciiz "\nSelect an int (1-5) and a word will be provided for the game: "
 userMenu: .asciiz "\n~~~~~~~~~~~~~~Main Menu~~~~~~~~~~~~~~\n(1) guess word\n(2) guess a letter\n(3) give up\n(4) exit the game"
 userChoice: .asciiz "\nPlease enter a number to choose an option: "
